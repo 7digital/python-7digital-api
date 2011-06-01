@@ -1,23 +1,3 @@
-7 digital API access via python | http://developer.7digital.net/
-
-=======
-Download python code: http://github.com/ocelma/7-digital/downloads
-
-Using the 7digital developer platform you can:
-    * Build digital music applications for the web, desktop and mobile devices
-    * Generate revenue with your own branded music download store
-    * Access our catalogue of over 10,000,000 MP3 music tracks
-    * Create your own streaming radio service
-    * Include official sleeve artwork and audio samples
-    * Have access to major labels licensed content in 16 major territories included US, Canada, UK, Germany, France, Spain, Italy and many more
-
-See some usage examples here: http://github.com/ocelma/7-digital/tree/v1.0
-
-DOWNLOAD LATEST VERSION: http://github.com/ocelma/7-digital/downloads
-
-- Examples:
- 
-# If you want to use the cache, you have to manually create that dir (e.g. $ mkdir ./cache)
 import py7digital
 
 #Search artist
@@ -79,3 +59,4 @@ for album in results.get_next_page():
         print '\tSimilar:', sim_album, sim_album.get_year(), sim_album.get_artist()
     for track in album.get_tracks():
         print '\t', track, track.get_isrc() #, track.get_url(), track.get_audio()
+
