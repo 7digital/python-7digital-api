@@ -29,6 +29,7 @@ import random
 import urlparse
 import hmac
 import binascii
+import re
 
 
 VERSION = '1.0' # Hi Blaine!
@@ -138,14 +139,15 @@ class OAuthToken(object):
         """ Returns a token from something like:
         oauth_token_secret=xxx&oauth_token=xxx
         """
-        params = cgi.parse_qs(s, keep_blank_values=False)
-        key = params['oauth_token'][0]
-        secret = params['oauth_token_secret'][0]
+        print "******* %s" % s.__class__
+        #params = urlparse.parse_qs(s, keep_blank_values=False)
+        
+        key = re.search("<oauth_token>(\w+)</oauth_token>", s).groups()[0]
+        print "@@@@@@ key: %s" %key
+        secret = re.search("<oauth_token_secret>(\w.+)</oauth_token_secret>", s).groups()[0]
+        print "@@@@@@ secret:  %s" % secret
         token = OAuthToken(key, secret)
-        try:
-            token.callback_confirmed = params['oauth_callback_confirmed'][0]
-        except KeyError:
-            pass # 1.0, no callback confirmed.
+
         return token
     from_string = staticmethod(from_string)
 
