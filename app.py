@@ -1,15 +1,13 @@
-from oauth7digital import Oauth7digital
 import pickle # for storing access token to file
-
+from lib.oauth7digital import Oauth7digital
 # key and secret you got from 7digital when registering an application
-CONSUMER_KEY = ''
-CONSUMER_SECRET = ''
+
 
 TOKEN_FILE = './access_token.pkl'
 
 def test_sevendigital():
     try:
-        pkl_file=open(TOKEN_FILE, 'rb')
+        pkl_file = open(TOKEN_FILE, 'rb')
         access_token = pickle.load(pkl_file)
         pkl_file.close()
     except:

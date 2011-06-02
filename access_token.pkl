@@ -1,7 +1,7 @@
 ccopy_reg
 _reconstructor
 p0
-(coauth
+(clib.oauth
 OAuthToken
 p1
 c__builtin__
@@ -12,10 +12,10 @@ Rp4
 (dp5
 S'secret'
 p6
-S'a89hu4R0Fyrh/hf3SFhb4Q=='
+S'H9Sd66Uyv+92e1WH0giB+g=='
 p7
 sS'key'
 p8
-S'EhtzdeS2i8MJBHvYUEg7MQ=='
+S'qtKibfZanGxQR3B9QVHCsg=='
 p9
 sb.
