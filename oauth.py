@@ -142,7 +142,7 @@ class OAuthToken(object):
         print "******* %s" % s.__class__
         #params = urlparse.parse_qs(s, keep_blank_values=False)
         
-        key = re.search("<oauth_token>(\w+)</oauth_token>", s).groups()[0]
+        key = re.search("<oauth_token>(\w.+)</oauth_token>", s).groups()[0]
         print "@@@@@@ key: %s" %key
         secret = re.search("<oauth_token_secret>(\w.+)</oauth_token_secret>", s).groups()[0]
         print "@@@@@@ secret:  %s" % secret
