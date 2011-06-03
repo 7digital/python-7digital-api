@@ -1,5 +1,6 @@
 import httplib
 import oauth
+import lockerEndpoint
     
 class Oauth7digital(object):
     key = None
@@ -7,17 +8,19 @@ class Oauth7digital(object):
     SERVER = 'api.7digital.com'
     REQUEST_TOKEN_URL = 'https://%s/1.2/oauth/requesttoken' % SERVER
     ACCESS_TOKEN_URL = 'https://%s/1.2/oauth/accesstoken' % SERVER
+    LOCKER_ENDPOINT_URL = 'http://%s/1.2/user/locker' %SERVER
 
-    def __init__(self, key, secret):
+    def __init__(self, key, secret, access_token = None):
         self.key = key
         self.secret = secret
+        self.access_token = access_token
 
     def request_token(self):
         print '\nOAUTH STEP 1'
         oauth_request = oauth.OAuthRequest.from_consumer_and_token(self.__consumer(), http_url = self.REQUEST_TOKEN_URL, parameters={})
         print '\nMESSAGE:: %s' %oauth_request
         oauth_request.sign_request(self.__signature_method(), self.__consumer(), None)
-        resp = self.__fetch_response(oauth_request, self.__connection()) 
+        resp = self.__fetch_response(oauth_request, self.__secure_connection()) 
 
         token = oauth.OAuthToken.from_string(resp)
         return token
@@ -34,12 +37,24 @@ class Oauth7digital(object):
     
     def request_access_token(self, token):
         print '\nOAUTH STEP 3'
-        oauth_request = oauth.OAuthRequest.from_consumer_and_token(self.__consumer(), token=token, http_url = self.ACCESS_TOKEN_URL, parameters={})
-        oauth_request.sign_request(self.__signature_method(), self.__consumer(), token)
-        resp = self.__fetch_response(oauth_request, self.__connection()) 
+        oauth_request = self.__sign_oauth_request(token, self.ACCESS_TOKEN_URL)
+        resp = self.__fetch_response(oauth_request, self.__secure_connection()) 
 
         token = oauth.OAuthToken.from_string(resp)
         return token
+    
+    def get_user_locker(self):
+        #get nonce, singature, singature method, timestamp, consumer key
+        oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
+        print "MESSAGE::get_user_locker::url:%s" % oauth_request.to_url()
+        resp = self.__fetch_response(oauth_request, self.__connection())
+        return lockerEndpoint.get_user_locker(resp)
+    
+    def __sign_oauth_request(self, token, url_end_point):
+        oauth_request = oauth.OAuthRequest.from_consumer_and_token(self.__consumer(), token=token, http_url = url_end_point, parameters={})
+        
+        oauth_request.sign_request(self.__signature_method(), self.__consumer(), token)
+        return oauth_request
       
     def __consumer(self):
         return oauth.OAuthConsumer(self.key, self.secret)
@@ -47,13 +62,18 @@ class Oauth7digital(object):
     def __signature_method(self):
         return oauth.OAuthSignatureMethod_HMAC_SHA1()
         
-    def __connection(self):
+    def __secure_connection(self):
         return httplib.HTTPSConnection(self.SERVER)
+    
+    def __connection(self):
+        return httplib.HTTPConnection(self.SERVER)
         
     def __fetch_response(self, oauth_request, connection):
 	    url = oauth_request.to_url()
+	    print "MESSAGE::fetch_url:url: " + url
 	    connection.request(oauth_request.http_method, url)
 	    response = connection.getresponse()
+	    print "response: " + response.read()
 	    result = response.read()
 	
 	    return result
