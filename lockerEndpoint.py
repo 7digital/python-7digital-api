@@ -13,22 +13,31 @@ class Locker(object):
         
     def get_artists(self):
         results = []
-        
         artist_nodes = self.xml_response.getElementsByTagName('artist')
         
-        for artist_node in artist_nodes:
-            print artist_node
-            results.append(LockerArtist(artist_node))
+        for artist in artist_nodes:
+            results.append(LockerArtist(artist))
             
         return results
-        
-class LockerArtist(object):
-    def __init__(self, xml):
-        self.id = xml.getAttribute('id')
-        self.name = self.__extract(xml, 'name')
-        self.url = self.__extract(xml, 'url')
     
-    def __extract(self, node, name, index = 0):
+    def get_releases(self):
+        results = []
+        release_nodes = self.xml_response.getElementsByTagName('release')
+        for release in release_nodes:
+            results.append(LockerRelease(release))
+        
+        return results
+        
+    def get_tracks(self):
+        results = []
+        track_nodes = self.xml_response.getElementsByTagName('lockerTrack')
+        for track in track_nodes:
+            results.append(LockerTrack(track))
+        
+        return results
+
+class _LockerBase(object):
+    def extract(self, node, name, index = 0):
         """Extracts a value from the xml string"""
         try:
             nodes = node.getElementsByTagName(name)
@@ -40,5 +49,53 @@ class LockerArtist(object):
                     return None
         except:
             return None
+            
+class LockerTrack(_LockerBase):
+    def __init__(self, xml):
+        self.track = Track(xml.getElementsByTagName('track')[0])
+        self.remaining_downloads = self.extract(xml, 'remainingDownloads') 
+        self.purchaseDate = self.extract(xml, 'purchaseDate') 
+        self.download_urls = self.__get_download_urls(xml.getElementsByTagName('downloadUrls'))
+    
+    def __get_download_urls(self, urls):
+        result = []
+        for url in urls:
+            result.append(DownloadUrls(url))
+        return result
+
+class DownloadUrls(_LockerBase):
+    def __init__(self, xml):
+        self.url = self.extract(xml, 'url')
+        self.format = Format(xml.getElementsByTagName('format')[0])
+
+class Format(_LockerBase):
+    def __init__(self, xml):
+        self.id = xml.getAttribute('id')
+        self.file_format = self.extract(xml, 'fileFormat')
+        self.bit_rate = self.extract(xml, 'bitRate')
         
+class Track(_LockerBase):
+    def __init__(self, xml):
+        self.id = xml.getAttribute('id')
+        self.title = self.extract(xml, 'title')
+        self.version = self.extract(xml, 'version')
+        self.artist = LockerArtist(xml.getElementsByTagName('artist')[0])
+        self.url = self.extract(xml, 'url')
+        
+class LockerRelease(_LockerBase):
+    def __init__(self, xml):
+        self.id = xml.getAttribute('id')
+        self.title = self.extract(xml, 'title') 
+        self.type = self.extract(xml, 'type')
+        self.artist = LockerArtist(xml.getElementsByTagName('artist')[0])
+        self.url = self.extract(xml, 'url')
+        self.image = self.extract(xml, 'image')
+        self.release_date = self.extract(xml, 'releaseDate')
+        
+class LockerArtist(_LockerBase):
+    def __init__(self, xml):
+        self.id = xml.getAttribute('id')
+        self.name = self.extract(xml, 'name')
+        self.url = self.extract(xml, 'url')
+    
         

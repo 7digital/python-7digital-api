@@ -1,6 +1,8 @@
 import pickle
 from lib.oauth7digital import Oauth7digital
 
+CONSUMER_KEY = '7dnrt4z3uh'
+CONSUMER_SECRET = 'gwwpdg2ht6vttfqp'
 
 TOKEN_FILE = './access_token.pkl'
 
@@ -30,9 +32,9 @@ def test_locker():
     access_token = test_sevendigital()
     
     sevendigital = Oauth7digital(CONSUMER_KEY, CONSUMER_SECRET, access_token)
-    results = sevendigital.get_artist_from_user_locker()
+    results = sevendigital.get_tracks_from_user_locker()
     for i in results:
-        print i.url
+        print i.track.artist.name
     return results
 
 # app entry point

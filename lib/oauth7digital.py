@@ -44,14 +44,25 @@ class Oauth7digital(object):
         return token
     
     def get_user_locker(self):
-        oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
-        resp = self.__fetch_response(oauth_request, self.__connection())
+        resp = self.__get_locker()
         return Locker(resp).get_content()
     
     def get_artist_from_user_locker(self):
+        resp = self.__get_locker()
+        return Locker(resp).get_artists()
+    
+    def get_releases_from_user_locker(self):
+        resp = self.__get_locker()
+        return Locker(resp).get_releases()
+    
+    def get_tracks_from_user_locker(self):
+        resp = self.__get_locker()
+        return Locker(resp).get_tracks()
+    
+    def __get_locker(self):
         oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
         resp = self.__fetch_response(oauth_request, self.__connection())
-        return Locker(resp).get_artists()
+        return resp
     
     def __sign_oauth_request(self, token, url_end_point):
         oauth_request = oauth.OAuthRequest.from_consumer_and_token(self.__consumer(), token=token, http_url = url_end_point, parameters={})
