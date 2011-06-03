@@ -8,8 +8,14 @@ class Locker(object):
     def __init__(self, xml_response):
         self.xml_response = parseString(xml_response)
         
-    def get_content(self):
-        return self.xml_response
+    def get_contents(self):
+        results = []
+        locker_items = self.xml_response.getElementsByTagName('lockerRelease')
+        
+        for item in locker_items:
+            results.append(LockerItem(item))
+            
+        return results
         
     def get_artists(self):
         results = []
@@ -49,6 +55,17 @@ class _LockerBase(object):
                     return None
         except:
             return None
+
+class LockerItem(_LockerBase):
+    def __init__(self, xml):
+        self.release = LockerRelease(xml.getElementsByTagName('release')[0])
+        self.tracks = self.__get_release_tracks(xml.getElementsByTagName('lockerTrack'))
+        
+    def __get_release_tracks(self, tracks):
+        result = []
+        for track in tracks:
+            result.append(LockerTrack(track))
+        return result
             
 class LockerTrack(_LockerBase):
     def __init__(self, xml):

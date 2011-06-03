@@ -59,6 +59,10 @@ class Oauth7digital(object):
         resp = self.__get_locker()
         return Locker(resp).get_tracks()
     
+    def get_locker(self):
+        resp = self.__get_locker()
+        return Locker(resp).get_contents()
+    
     def __get_locker(self):
         oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
         resp = self.__fetch_response(oauth_request, self.__connection())
