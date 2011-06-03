@@ -1,6 +1,6 @@
 import httplib
 import oauth
-import lockerEndpoint
+from lockerEndpoint import Locker
     
 class Oauth7digital(object):
     key = None
@@ -46,7 +46,12 @@ class Oauth7digital(object):
     def get_user_locker(self):
         oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
         resp = self.__fetch_response(oauth_request, self.__connection())
-        return lockerEndpoint.get_user_locker(resp)
+        return Locker(resp).get_content()
+    
+    def get_artist_from_user_locker(self):
+        oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
+        resp = self.__fetch_response(oauth_request, self.__connection())
+        return Locker(resp).get_artists()
     
     def __sign_oauth_request(self, token, url_end_point):
         oauth_request = oauth.OAuthRequest.from_consumer_and_token(self.__consumer(), token=token, http_url = url_end_point, parameters={})

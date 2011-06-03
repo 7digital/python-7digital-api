@@ -30,9 +30,10 @@ def test_locker():
     access_token = test_sevendigital()
     
     sevendigital = Oauth7digital(CONSUMER_KEY, CONSUMER_SECRET, access_token)
-    result = sevendigital.get_user_locker()
-    print result.get_release()
-    return result.get_release()
+    results = sevendigital.get_artist_from_user_locker()
+    for i in results:
+        print i.url
+    return results
 
 # app entry point
 if __name__ == '__main__':
