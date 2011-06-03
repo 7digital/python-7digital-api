@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 """A python interface to 7digital's locker endpoint"""
 import os
-import urllib2, urllib
-import re
-import urlparse
 from xml.dom import minidom
 
 

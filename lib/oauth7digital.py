@@ -44,9 +44,7 @@ class Oauth7digital(object):
         return token
     
     def get_user_locker(self):
-        #get nonce, singature, singature method, timestamp, consumer key
         oauth_request = self.__sign_oauth_request(self.access_token, self.LOCKER_ENDPOINT_URL)
-        print "MESSAGE::get_user_locker::url:%s" % oauth_request.to_url()
         resp = self.__fetch_response(oauth_request, self.__connection())
         return lockerEndpoint.get_user_locker(resp)
     
@@ -70,10 +68,8 @@ class Oauth7digital(object):
         
     def __fetch_response(self, oauth_request, connection):
 	    url = oauth_request.to_url()
-	    print "MESSAGE::fetch_url:url: " + url
 	    connection.request(oauth_request.http_method, url)
 	    response = connection.getresponse()
-	    print "response: " + response.read()
 	    result = response.read()
 	
 	    return result

@@ -20,18 +20,14 @@ def test_sevendigital():
         authorized = auth.authorize_request_token(token)
         access_token = auth.request_access_token(token)
         
-        print 'MESSAGE:: access token: %s' % access_token
-        
         pkl_file=open(TOKEN_FILE, 'wb')
         pickle.dump(access_token, pkl_file)
         pkl_file.close()
+        
     return access_token
         
 def test_locker():
     access_token = test_sevendigital()
-    print "MESSAGE:: access_token key: %s" %access_token.key
-    print "MESSAGE:: access_token secret: %s" %access_token.secret
-    #url = 'oauth_consumer_key=%s&oauth_nonce=%s&oauth_signature_method=%s&oauth_timestamp=%s&oauth_token=%s&oauth_signature=%s' %()
     
     sevendigital = Oauth7digital(CONSUMER_KEY, CONSUMER_SECRET, access_token)
     result = sevendigital.get_user_locker()
