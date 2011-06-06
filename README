@@ -79,3 +79,14 @@ for album in results.get_next_page():
         print '\tSimilar:', sim_album, sim_album.get_year(), sim_album.get_artist()
     for track in album.get_tracks():
         print '\t', track, track.get_isrc() #, track.get_url(), track.get_audio()
+
+
+-- OAuth Usage
+
+auth = Oauth7digital(CONSUMER_KEY, CONSUMER_SECRET)
+token = auth.request_token()
+authorized = auth.authorize_request_token(token)
+access_token = auth.request_access_token(token)
+
+sevendigital = Oauth7digital(CONSUMER_KEY, CONSUMER_SECRET, access_token)
+results = sevendigital.get_locker()
